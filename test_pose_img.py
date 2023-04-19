@@ -18,7 +18,7 @@ with Pose(
         print(index) 
         print(f"{landmark.x * image.shape[0]}")
         print(f"{landmark.y * image.shape[1]}")
-    print(f"length of {len(results.pose_landmarks.landmark)}")
+    print(f"length of {len(results.pose_landmarks.landmark)}") # type: ignore
     # Draw the pose annotation on the image.
     image.flags.writeable = True
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
