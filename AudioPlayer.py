@@ -35,7 +35,7 @@ class SingletonMeta(type):
 class AudioPlayer(metaclass=SingletonMeta):
     DEFAULT_AUDIO_PATH = Path("audio") / "uma_musume.mp3"
     audio_player = mixer.music
-    def __init__(self, audio_path: PathLike = None):
+    def __init__(self, audio_path: PathLike|None = None):
         self.audio_player.load(self.DEFAULT_AUDIO_PATH if audio_path is None else self.DEFAULT_AUDIO_PATH)
         self._volume: float = 0.3
         self.started: bool = False
@@ -59,7 +59,8 @@ class AudioPlayer(metaclass=SingletonMeta):
             self.pause_time = time.time()
 
     def _resume(self):
-        if time.time() - self.pause_time < self._restart_time_threshold:
+        # self.pause_time is already set at this point
+        if time.time() - self.pause_time < self._restart_time_threshold: # type: ignore
             logging.debug("unpause")
             print("unpause")
             self.audio_player.unpause()
@@ -105,7 +106,7 @@ def test():
             audio_player.resume()
         elif ch == "v":
             v = float(input("Enter volume(0 to 1): "))
-            audio_player.set_volume(v)
+            audio_player.volume = v
         elif ch == "e":
             audio_player.stop()
             break
