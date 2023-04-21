@@ -5,7 +5,9 @@ from mediapipe.python.solutions.drawing_styles import get_default_pose_landmarks
 import numpy as np
 
 # For webcam input:
+print("obtaining camera object...")
 cap = cv2.VideoCapture(0)
+print("done", cap, cap.isOpened())
 # capture video with 30 fps
 cap.set(cv2.CAP_PROP_FPS, 30)
   
