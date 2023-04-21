@@ -3,6 +3,8 @@ from contextlib import redirect_stdout
 from pathlib import Path
 from io import StringIO
 from os import PathLike
+import time
+import logging
 
 with redirect_stdout(StringIO()) as pygame_console_output: # do not print pygame init message to console
     # use built-in pygame audio module to play/pause/resume/stop audio on request
@@ -35,10 +37,12 @@ class AudioPlayer(metaclass=SingletonMeta):
     audio_player = mixer.music
     def __init__(self, audio_path: PathLike = None):
         self.audio_player.load(self.DEFAULT_AUDIO_PATH if audio_path is None else self.DEFAULT_AUDIO_PATH)
-        self._volume = 0.3
-        self.started = False
-        self.is_playing = False
-    
+        self._volume: float = 0.3
+        self.started: bool = False
+        self.pause_time: float|None = None
+        self._restart_time_threshold: float = 5 # seconds passed to restart the music instead of resume
+        self.is_playing: bool = False
+        
     
     @property
     def volume(self):
@@ -49,18 +53,39 @@ class AudioPlayer(metaclass=SingletonMeta):
         self.audio_player.set_volume(volume)
     
     def pause(self):
-        if not self.is_playing:
+        if self.is_playing:
             self.is_playing = False
             self.audio_player.pause()
+            self.pause_time = time.time()
+
+    def _resume(self):
+        if time.time() - self.pause_time < self._restart_time_threshold:
+            logging.debug("unpause")
+            print("unpause")
+            self.audio_player.unpause()
+        else:
+            logging.debug("restart")
+            print("restart")
+            self.audio_player.rewind()
+            self.audio_player.unpause()
+        
 
     def resume(self):
         if not self.started:
-            self.started = True
+            logging.debug("starting music")
+            print("starting music")
             self.audio_player.play()
+            self.started = True
+            self.is_playing = True
         else:
+            logging.debug("music has already been started")
+            print("music has already been started")
             if not self.is_playing:
-                self.audio_player.unpause()
-
+                logging.debug("resuming")
+                print("resuming")
+                self._resume()
+                self.is_playing = True
+                
     def stop(self):
         self.audio_player.stop()
     
