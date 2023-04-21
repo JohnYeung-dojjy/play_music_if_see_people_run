@@ -35,7 +35,7 @@ class PoseDetectionResult:
     def to_numpy(self):
         return np.array(self.landmarks)
 
-class PoseDetector():
+class SinglePersonPoseDetector():
     def __init__(self,
                  static_image_mode=False,
                  min_detection_confidence=0.5,
@@ -44,8 +44,9 @@ class PoseDetector():
         self.pose: Pose = Pose(static_image_mode=static_image_mode,
                          min_detection_confidence=min_detection_confidence,
                          min_tracking_confidence=min_tracking_confidence)
-
-    def detect(self, image):
+        
+    def detect(self, image)->list:
+        #TODO: return list of landmarks, instead of image
         image_height, image_width, _ = image.shape
         results = self.pose.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 
@@ -54,6 +55,23 @@ class PoseDetector():
                 landmark_x = min(int(landmark.x * image_width), image_width - 1)
                 landmark_y = min(int(landmark.y * image_height), image_height - 1)
                 cv2.circle(image, (landmark_x, landmark_y), 5, (0, 255, 0), -1)
-
+        draw_landmarks(
+        image,
+        results.pose_landmarks, # type: ignore
+        list(POSE_CONNECTIONS),
+        landmark_drawing_spec=get_default_pose_landmarks_style())
         return image
     
+def test():
+    from VideoStreamManager import VideoStreamManager
+    video_stream = VideoStreamManager(camera_id=0)
+    pose_detector = SinglePersonPoseDetector()
+    for frame in video_stream.read_frames():
+        
+        cv2.imshow('frame', pose_detector.detect(frame))
+    
+    
+
+
+if __name__ == '__main__':
+    test()
