@@ -1,0 +1,8 @@
+tensorflow
+opencv
+numpy
+pandas
+tqdm
+mediapipe
+pytorch
+pygame
