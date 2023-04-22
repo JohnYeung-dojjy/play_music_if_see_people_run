@@ -2,7 +2,7 @@
 import tensorflow as tf
 
 # Load the input image.
-image_path = 'test3.jpg'
+image_path = 'test2.jpg'
 image = tf.io.read_file(image_path)
 image = tf.compat.v1.image.decode_jpeg(image)
 image = tf.expand_dims(image, axis=0)
@@ -10,7 +10,7 @@ image = tf.expand_dims(image, axis=0)
 image = tf.image.resize_with_pad(image, 192, 192)
 
 # Initialize the TFLite interpreter
-interpreter = tf.lite.Interpreter(model_path="models/TFLite_float16.tflite")
+interpreter = tf.lite.Interpreter(model_path="models/pose/MoveNet_TFLite_float16.tflite")
 interpreter.allocate_tensors()
 
 # TF Lite format expects tensor type of float32.
