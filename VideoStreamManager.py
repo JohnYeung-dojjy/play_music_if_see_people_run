@@ -20,8 +20,8 @@ class VideoStreamManager:
             AttributeError: Raised if both camera_id and video_file has non-None inputs
             StreamInputError: Raised if video stream is not loaded successfully
         """        
-        if not bool(video_file)^ (bool(camera_id) or camera_id==0): 
-            raise AttributeError("Video stream can either come from camera or video file")
+        if (camera_id is not None) ^ (camera_id is not None): 
+            raise AttributeError("Video stream can only come from either camera or video file")
         self.camera_id: int|None = camera_id
         self.video_file: PathLike|None = video_file
         logging.info("Preparing video stream")
