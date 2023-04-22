@@ -8,12 +8,12 @@ class StreamInputError(Exception):
 
 class VideoStreamManager:
     """A Handler for video streams."""
-    def __init__(self, camera_id: int|None=None, video_file: PathLike|None=None, fps=30):
+    def __init__(self, camera_id: int|str|None=None, video_file: PathLike|str|None=None, fps=30):
         """Initialize the video stream manager
 
         Args:
-            camera_id (int|None,, optional): camera_id to be read from, cannot co-exist with video_file. Defaults to None.
-            video_file (PathLike|None, optional): Path for video to be read from, cannot co-exist with camera_id.. Defaults to None.
+            camera_id (int|str|None,, optional): camera_id to be read from, cannot co-exist with video_file. Defaults to None.
+            video_file (PathLike|str|None, optional): Path for video to be read from, cannot co-exist with camera_id.. Defaults to None.
             fps (int, optional): _description_. Defaults to 30.
 
         Raises:
@@ -22,8 +22,8 @@ class VideoStreamManager:
         """        
         if (camera_id is not None) ^ (camera_id is not None): 
             raise AttributeError("Video stream can only come from either camera or video file")
-        self.camera_id: int|None = camera_id
-        self.video_file: PathLike|None = video_file
+        self.camera_id: int|str|None = camera_id
+        self.video_file: PathLike|str|None = video_file
         logging.info("Preparing video stream")
         self.video_capture = cv2.VideoCapture(camera_id) if camera_id is not None else cv2.VideoCapture(str(video_file))
         logging.info("Done")
