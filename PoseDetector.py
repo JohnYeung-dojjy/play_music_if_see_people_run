@@ -9,35 +9,25 @@ from typing import NamedTuple
 import tensorflow as tf
     
 class PoseDetectionResult:
-  def __init__(self, landmarks: list[float], mask: set=set()):
-    # if mask is None:
-    #     # discard 0-10 for head positions
-    #     mask = {
-    #         PoseLandmark.NOSE,
-    #         PoseLandmark.LEFT_EYE_INNER,
-    #         PoseLandmark.LEFT_EYE,
-    #         PoseLandmark.LEFT_EYE_OUTER,
-    #         PoseLandmark.RIGHT_EYE_INNER,
-    #         PoseLandmark.RIGHT_EYE,
-    #         PoseLandmark.RIGHT_EYE_OUTER,
-    #         PoseLandmark.LEFT_EAR,
-    #         PoseLandmark.RIGHT_EAR,
-    #         PoseLandmark.MOUTH_LEFT,
-    #         PoseLandmark.MOUTH_RIGHT
-    #     }
+  def __init__(self, landmarks):
     # landmark.x, landmark.y are in a [0,1] scale, except when those are out-of-bound
     #TODO: make it np array by default
-    self.landmarks: list = list([[landmark.x, landmark.y] for (idx, landmark) in enumerate(landmarks.landmark) if idx not in mask]) # type: ignore
+    self.landmarks = landmarks
+    self.concise_landmarks: np.array = np.array([[landmark.x, landmark.y] for landmark in landmarks.landmark]) # type: ignore
+    self.concise_landmarks[:, 1] = 1-self.concise_landmarks[:, 1] # flip y axis
   #TODO: make normalize function    
+  def normalize(self):
+    """Inplace normalization to the concise_landmarks"""
+    max_landmarks_xy = np.max(self.concise_landmarks, axis=0)
+    min_landmarks_xy = np.min(self.concise_landmarks, axis=0)
+    self.concise_landmarks = (self.concise_landmarks - min_landmarks_xy) / (max_landmarks_xy - min_landmarks_xy)
+    return self
         
   def to_torch_tensor(self):
     return torch.tensor(self.landmarks)
   
-  def to_numpy(self):
-    return np.array(self.landmarks)
-  
   def to_flattened_list(self):
-    return list(self.to_numpy().flatten())
+    return list(self.concise_landmarks.flatten())
 
 class SinglePersonPoseDetector():
   def __init__(self,
@@ -49,15 +39,32 @@ class SinglePersonPoseDetector():
                         min_detection_confidence=min_detection_confidence,
                         min_tracking_confidence=min_tracking_confidence)
       
-  def detect(self, image)->PoseDetectionResult|None:
+  def detect(self, image, display_image:bool=False, display_landmarks:bool=False)->PoseDetectionResult|None:
     #TODO: return list of landmarks, instead of image
-    # image_height, image_width, _ = image.shape
     results = self.pose.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
     # print(results.pose_landmarks)
+    if display_image:
+      self.display_image(image, results, display_landmarks)
     if results.pose_landmarks: # type: ignore
       return PoseDetectionResult(results.pose_landmarks) # type: ignore
     else:
       return None
+  def display_image(self, image, results, display_landmarks:bool):
+    image_height, image_width, _ = image.shape
+    if display_landmarks and results.pose_landmarks:
+      for landmark in results.pose_landmarks.landmark: # type: ignore
+        # landmark_x = min(int(landmark.x * image_width), image_width - 1)
+        # landmark_y = min(int(landmark.y * image_height), image_height - 1)
+        landmark_x = int(landmark.x * image_width)
+        landmark_y = int(landmark.y * image_height)
+        cv2.circle(image, (landmark_x, landmark_y), 5, (0, 255, 0), -1)
+      draw_landmarks(
+        image,
+        results.pose_landmarks, # type: ignore
+        list(POSE_CONNECTIONS),
+        landmark_drawing_spec=get_default_pose_landmarks_style()
+      )
+    cv2.imshow('image', image)
     # if results.pose_landmarks: # type: ignore
     #     for landmark in results.pose_landmarks.landmark: # type: ignore
     #         landmark_x = min(int(landmark.x * image_width), image_width - 1)
@@ -72,13 +79,16 @@ class SinglePersonPoseDetector():
   
 def test():
   from VideoStreamManager import VideoStreamManager
-  video_stream = VideoStreamManager(camera_id=0)
+  # video_stream = VideoStreamManager(camera_id=0)
+  video_stream = VideoStreamManager(video_file="Dataset/KTH/walking/person01_walking_d1_uncomp.avi")
   pose_detector = SinglePersonPoseDetector()
   for frame in video_stream.read_frames():
-      
-    cv2.imshow('frame', pose_detector.detect(frame))
+    result: PoseDetectionResult | None = pose_detector.detect(frame, 
+                                          display_image=True,
+                                          display_landmarks=True
+                                          )
   
-    
+  
 
 
 if __name__ == '__main__':
