@@ -47,11 +47,12 @@ class VideoStreamManager:
     """A generator that reads frames from the video stream
 
     Yields:
-      cs2 Mat object: the frame object captured by self.video_capture
+      cv2 Mat object: the frame object captured by self.video_capture
     """
     while self.video_capture.isOpened():
       if self.is_confirmed_exit(): break
       ret, frame = self.video_capture.read()
+      # print(self.frame_count)
       if not ret:
         if self.camera_id is not None:
           print("Ignoring empty camera frame.")
@@ -60,6 +61,7 @@ class VideoStreamManager:
           break
       self.frame_count += 1
       yield frame
+    # self.__del__()
 
 def test():
   tester = VideoStreamManager(camera_id=0)
