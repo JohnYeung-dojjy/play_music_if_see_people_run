@@ -11,11 +11,12 @@ import tensorflow as tf
 class PoseDetectionResult:
   def __init__(self, landmarks):
     # landmark.x, landmark.y are in a [0,1] scale, except when those are out-of-bound
+    assert landmarks is not None, "landmarks should not be None"
     #TODO: make it np array by default
     self.landmarks = landmarks
     self.concise_landmarks: np.array = np.array([[landmark.x, landmark.y] for landmark in landmarks.landmark]) # type: ignore
     self.concise_landmarks[:, 1] = 1-self.concise_landmarks[:, 1] # flip y axis
-  #TODO: make normalize function    
+   
   def normalize(self):
     """Inplace normalization to the concise_landmarks"""
     max_landmarks_xy = np.max(self.concise_landmarks, axis=0)
