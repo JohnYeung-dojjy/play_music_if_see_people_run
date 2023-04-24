@@ -8,6 +8,7 @@ mediapipe==0.9.3.0
 opencv==4.6.0==py310h4ed8f06_3
 numpy==1.23.5==py310h60c9a35_0
 pandas==2.0.0==py310h1c4a608_0 # need to install via conda-forge, command: conda install -c conda-forge pandas==2.0.0
+pyarrow==11.0.0==py310h790e06d_0
 tqdm==4.65.0==py310h9909e9c_0
 # tensorflow
 # pytorch
