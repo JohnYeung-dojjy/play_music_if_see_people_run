@@ -45,7 +45,14 @@ class PoseActionClassifier:
     self.label_encoder: preprocessing.LabelEncoder = joblib.load(str(Path('models')/'label'/'label_encoder.pkl'))
 
   def classify(self, pose: PoseDetectionResult)->str:
-    data = pose.normalize().np_landmarks[MEDIAPIPE_MASK]
+    data = pose.normalize().np_landmarks.flatten()[MEDIAPIPE_MASK].reshape(1, -1) # reshape as it contains only 1 sample
+    # print(data.shape)
+    # data = data
+    # print(data.shape)
+    # data = data[MEDIAPIPE_MASK]
+    # print(data.shape)
     y_pred = self.model.predict(data)
-    return self.label_encoder.inverse_transform(y_pred)[0]
+    label = self.label_encoder.inverse_transform(y_pred)
+    print(y_pred, label)
+    return label[0]
     

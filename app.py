@@ -44,12 +44,12 @@ def main(camera_id: int|str|None=None,
       audio_player.pause()
       continue  
     else:
-      action = action_classifier.classify(detected_pose.normalize().to_flattened_list())
+      action = action_classifier.classify(detected_pose)
       if action == "running":
         audio_player.resume()
       else:
         audio_player.pause()
-        audio_player.resume()
+        # audio_player.resume()
 
 
 if __name__ == "__main__":
