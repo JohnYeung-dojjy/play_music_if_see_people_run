@@ -1,5 +1,6 @@
 import pandas as pd
-
+from pathlib import Path
 def load_KTH()->pd.DataFrame:
-  return pd.read_csv("KTH_dataset.csv", engine="pyarrow")
+  current_dir = Path(__file__).parent.absolute()
+  return pd.read_csv(current_dir/"KTH_dataset.csv", engine="pyarrow")
   
