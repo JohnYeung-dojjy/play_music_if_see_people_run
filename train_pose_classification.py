@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 def create_training_dataset_from_KTH(cpu_cores: int|None)->None:
   """
   Creates a training dataset from the KTH dataset.
+  Currently only available in way back machine (2023-04-24 YYYY-MM-DD)
+  https://web.archive.org/web/20190701125018/https://www.nada.kth.se/cvap/actions/
   """
   data = []
   dataset_path = Path("Dataset") / "KTH"
@@ -54,7 +56,7 @@ def create_training_dataset_from_KTH(cpu_cores: int|None)->None:
   for enum in PoseLandmark:   
     column_names += [enum.name+u_x, enum.name+u_y]
   dataset = pd.DataFrame(data, columns=column_names)
-  dataset.to_csv(f"{dataset_path/'dataset.csv'}", index=False)
+  dataset.to_csv(str(Path("TrainingData")/"KTH_dataset.csv"), index=False)
 
 if __name__ == "__main__":
   # take multiple arguments from argparse, if argument matches 'KTH', run create_training_dataset_from_KTH()
