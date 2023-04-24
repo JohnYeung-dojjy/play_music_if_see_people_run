@@ -1,8 +1,14 @@
-tensorflow
-opencv
-numpy
-pandas
-tqdm
-mediapipe
-pytorch
-pygame
+# command for package installation
+# $ while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt
+
+pygame==2.3.0
+mediapipe==0.9.3.0
+
+# packages available via conda
+opencv==4.6.0==py310h4ed8f06_3
+numpy==1.23.5==py310h60c9a35_0
+pandas==2.0.0==py310h1c4a608_0 # need to install via conda-forge, command: conda install -c conda-forge pandas==2.0.0
+tqdm==4.65.0==py310h9909e9c_0
+# tensorflow
+# pytorch
+scikit-learn==1.2.2
