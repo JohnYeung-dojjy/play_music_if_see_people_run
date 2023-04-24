@@ -14,9 +14,9 @@ class PoseDetectionResult:
     assert landmarks is not None, "landmarks should not be None"
     #TODO: make it np array by default
     self.landmarks = landmarks
-    self.np_landmarks: np.array = np.array([[landmark.x, landmark.y] for landmark in landmarks.landmark]) # type: ignore
+    self.np_landmarks: np.ndarray = np.array([[landmark.x, landmark.y] for landmark in landmarks.landmark])
     self.np_landmarks[:, 1] = 1-self.np_landmarks[:, 1] # flip y axis
-   
+  
   def normalize(self):
     """Inplace normalization to the concise_landmarks"""
     max_landmarks_xy = np.max(self.np_landmarks, axis=0)
