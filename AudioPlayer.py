@@ -61,29 +61,29 @@ class AudioPlayer(metaclass=SingletonMeta):
   def _resume(self):
     # self.pause_time is already set at this point
     if time.time() - self.pause_time < self._restart_time_threshold: # type: ignore
-      logging.debug("unpause")
-      print("unpause")
+      # logging.debug("unpause")
+      # print("unpause")
       self.audio_player.unpause()
     else:
-      logging.debug("restart")
-      print("restart")
+      # logging.debug("restart")
+      # print("restart")
       self.audio_player.rewind()
       self.audio_player.unpause()
       
 
   def resume(self):
     if not self.started:
-      logging.debug("starting music")
-      print("starting music")
+      # logging.debug("starting music")
+      # print("starting music")
       self.audio_player.play()
       self.started = True
       self.is_playing = True
     else:
-      logging.debug("music has already been started")
-      print("music has already been started")
+      # logging.debug("music has already been started")
+      # print("music has already been started")
       if not self.is_playing:
-          logging.debug("resuming")
-          print("resuming")
+          # logging.debug("resuming")
+          # print("resuming")
           self._resume()
           self.is_playing = True
               
