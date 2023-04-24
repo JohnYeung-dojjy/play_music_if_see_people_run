@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-
 Actions = {
-  0: "walk",
-  1: "run"
+  0: "walking",
+  1: "running",
 }
 
 class PoseActionClassifier:
