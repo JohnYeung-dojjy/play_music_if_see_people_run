@@ -14,21 +14,21 @@ class PoseDetectionResult:
     assert landmarks is not None, "landmarks should not be None"
     #TODO: make it np array by default
     self.landmarks = landmarks
-    self.concise_landmarks: np.array = np.array([[landmark.x, landmark.y] for landmark in landmarks.landmark]) # type: ignore
-    self.concise_landmarks[:, 1] = 1-self.concise_landmarks[:, 1] # flip y axis
+    self.np_landmarks: np.array = np.array([[landmark.x, landmark.y] for landmark in landmarks.landmark]) # type: ignore
+    self.np_landmarks[:, 1] = 1-self.np_landmarks[:, 1] # flip y axis
    
   def normalize(self):
     """Inplace normalization to the concise_landmarks"""
-    max_landmarks_xy = np.max(self.concise_landmarks, axis=0)
-    min_landmarks_xy = np.min(self.concise_landmarks, axis=0)
-    self.concise_landmarks = (self.concise_landmarks - min_landmarks_xy) / (max_landmarks_xy - min_landmarks_xy)
+    max_landmarks_xy = np.max(self.np_landmarks, axis=0)
+    min_landmarks_xy = np.min(self.np_landmarks, axis=0)
+    self.np_landmarks = (self.np_landmarks - min_landmarks_xy) / (max_landmarks_xy - min_landmarks_xy)
     return self
         
   def to_torch_tensor(self):
     return torch.tensor(self.landmarks)
   
   def to_flattened_list(self):
-    return list(self.concise_landmarks.flatten())
+    return list(self.np_landmarks.flatten())
 
 class SinglePersonPoseDetector():
   def __init__(self,
