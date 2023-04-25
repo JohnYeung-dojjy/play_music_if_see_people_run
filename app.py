@@ -35,7 +35,7 @@ def main(camera_id: int|str|None=None,
                                     video_file=video_file,
                                     fps=fps)
   pose_detector = SinglePersonPoseDetector()
-  action_classifier = PoseActionClassifier("pose_action_classifier_jogging=walking.pkl")
+  action_classifier = PoseActionClassifier(jogging="walking")
   
   last_resume_time = time.time()
   

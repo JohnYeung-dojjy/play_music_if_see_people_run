@@ -3,8 +3,7 @@ from PoseDetector import PoseLandmark, PoseDetectionResult
 from mediapipe.python.solutions.pose import POSE_CONNECTIONS
 from mediapipe.python.solutions.drawing_styles import get_default_pose_landmarks_style
 import cv2
-import joblib
-from pathlib import Path
+from models import load_pose_action_classifier, load_label_encoder
 try:
   from sklearnex import patch_sklearn # speed up sklearn if cpu is intel
   patch_sklearn()
@@ -52,15 +51,17 @@ MEDIAPIPE_MASK: list[bool] = [False, False, # nose
                               ]
 
 class PoseActionClassifier:
-  def __init__(self, pose_action_classifier_path: Path|str):
+  def __init__(self, jogging: str=""):
     """Set up the pose action classifier
+    if set to 'running', load the classifier which is trained with 'jogging' treated as 'running' in the dataset.
+    if set to 'walking', load the classifier which is trained with 'jogging' treated as 'walking' in the dataset.
+    if set to ''       , load the classifier which is trained with 'jogging' treated as ''        in the dataset.
 
     Args:
         pose_action_classifier_path (Path | str): the path to the pre-trained pose action classifier model
     """
-    assert Path(pose_action_classifier_path).suffix == ".pkl", "pose_action_classifier_path must be a .pkl file"
-    self.model: svm.SVC = joblib.load(str(Path('models')/'action'/pose_action_classifier_path))
-    self.label_encoder: preprocessing.LabelEncoder = joblib.load(str(Path('models')/'label'/'label_encoder.pkl'))
+    self.model: svm.SVC = load_pose_action_classifier(jogging=jogging)
+    self.label_encoder: preprocessing.LabelEncoder = load_label_encoder()
 
   def classify(self, pose: PoseDetectionResult)->str:
     data = pose.normalize().np_landmarks.flatten()[MEDIAPIPE_MASK].reshape(1, -1) # reshape as it contains only 1 sample
