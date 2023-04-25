@@ -74,9 +74,8 @@ if __name__ == "__main__":
   parser.add_argument("dataset", nargs='+', help="KTH or other")
   args = parser.parse_args()
   for dataset_name in args.dataset:
-    match dataset_name:
-      case "KTH":
-        create_training_dataset_from_KTH(args.cores_used)
-      case _:
-        print("Unknown dataset")
-        continue
+    if dataset_name == "KTH":
+      create_training_dataset_from_KTH(args.cores_used)
+    else:
+      print(f"Unknown dataset: {dataset_name}")
+      continue
