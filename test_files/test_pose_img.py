@@ -12,7 +12,7 @@ if __name__ == '__main__':
         min_tracking_confidence=0.5) as pose:
         # To improve performance, optionally mark the image as not writeable to
         # pass by reference.
-        image = cv2.imread("test2.jpg")
+        image = cv2.imread("test3.jpg")
         # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = pose.process(image)
         for index, landmark in enumerate(results.pose_landmarks.landmark): # type: ignore
