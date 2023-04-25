@@ -1,9 +1,9 @@
 from __future__ import annotations
-from PoseDetector import PoseLandmark, PoseDetectionResult
+from .PoseDetector import PoseLandmark, PoseDetectionResult
 from mediapipe.python.solutions.pose import POSE_CONNECTIONS
 from mediapipe.python.solutions.drawing_styles import get_default_pose_landmarks_style
 import cv2
-from models import load_pose_action_classifier, load_label_encoder
+from .models import load_pose_action_classifier, load_label_encoder
 try:
   from sklearnex import patch_sklearn # speed up sklearn if cpu is intel
   patch_sklearn()

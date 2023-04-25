@@ -1,9 +1,9 @@
 """Main program for the play audio when see person running"""
 from __future__ import annotations
-from PoseDetector import SinglePersonPoseDetector, PoseDetectionResult
-from VideoStreamManager import VideoStreamManager
-from AudioPlayer import AudioPlayer
-from ActionClassifier import PoseActionClassifier
+from .PoseDetector import SinglePersonPoseDetector, PoseDetectionResult
+from .VideoStreamManager import VideoStreamManager
+from .AudioPlayer import AudioPlayer
+from .ActionClassifier import PoseActionClassifier
 from os import PathLike
 import time
 

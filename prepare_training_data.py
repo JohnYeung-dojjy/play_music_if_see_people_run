@@ -3,8 +3,8 @@ from multiprocessing import Pool
 from glob import glob
 from pathlib import Path
 import pandas as pd
-from PoseDetector import SinglePersonPoseDetector, PoseLandmark
-from VideoStreamManager import VideoStreamManager
+from .PoseDetector import SinglePersonPoseDetector, PoseLandmark
+from .VideoStreamManager import VideoStreamManager
 import logging
 import cv2
 from tqdm import tqdm
