@@ -20,7 +20,6 @@ class PoseDetectionResult:
     #TODO: make it np array by default
     self.landmarks = landmarks
     self.np_landmarks: np.ndarray = np.array([[landmark.x, landmark.y] for landmark in landmarks.landmark])
-    self.np_landmarks[:, 1] = 1-self.np_landmarks[:, 1] # flip y axis
   
   def normalize(self):
     """Inplace normalization to the concise_landmarks"""
