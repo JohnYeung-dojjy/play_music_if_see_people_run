@@ -1,8 +1,19 @@
 from __future__ import annotations
 from PoseDetector import PoseLandmark, PoseDetectionResult
+from mediapipe.python.solutions.pose import POSE_CONNECTIONS
+from mediapipe.python.solutions.drawing_styles import get_default_pose_landmarks_style
+import cv2
 import joblib
 from pathlib import Path
+try:
+  from sklearnex import patch_sklearn # speed up sklearn if cpu is intel
+  patch_sklearn()
+except ImportError as sklearnex_not_installed:
+  print("sklearnex not installed, use default sklearn instead")
+  print("if you want to use sklearn, please refer to https://pypi.org/project/scikit-learn-intelex/")
+
 from sklearn import svm, preprocessing
+from mediapipe.python.solutions.drawing_utils import draw_landmarks, draw_detection
 
 MEDIAPIPE_MASK: list[bool] = [False, False, # nose
                               False, False, # left_eye_inner
@@ -40,19 +51,50 @@ MEDIAPIPE_MASK: list[bool] = [False, False, # nose
                               ]
 
 class PoseActionClassifier:
-  def __init__(self):
-    self.model: svm.SVC = joblib.load(str(Path('models')/'action'/'pose_action_classifier.pkl'))
+  def __init__(self, pose_action_classifier_path: Path|str):
+    """Set up the pose action classifier
+
+    Args:
+        pose_action_classifier_path (Path | str): the path to the pre-trained pose action classifier model
+    """
+    assert Path(pose_action_classifier_path).suffix == ".pkl", "pose_action_classifier_path must be a .pkl file"
+    self.model: svm.SVC = joblib.load(str(Path('models')/'action'/pose_action_classifier_path))
     self.label_encoder: preprocessing.LabelEncoder = joblib.load(str(Path('models')/'label'/'label_encoder.pkl'))
 
   def classify(self, pose: PoseDetectionResult)->str:
     data = pose.normalize().np_landmarks.flatten()[MEDIAPIPE_MASK].reshape(1, -1) # reshape as it contains only 1 sample
-    # print(data.shape)
-    # data = data
-    # print(data.shape)
-    # data = data[MEDIAPIPE_MASK]
-    # print(data.shape)
     y_pred = self.model.predict(data)
     label = self.label_encoder.inverse_transform(y_pred)
-    print(y_pred, label)
+    # print(y_pred, label)
     return label[0]
+  
+  def display_image(self, image, label_pred: str, detected_pose: PoseDetectionResult|None, display_image:bool=False, display_landmarks:bool=False):
+    """Display the detected pose skeleton and the predicted pose action"""
+    # make image larger if it was small
+    image_height, image_width, _ = image.shape
+    target_width = min(680, image_width*2)
+    target_height = target_width * image.shape[0] // image.shape[1]
+    image = cv2.resize(image, (target_width, target_height))
     
+    
+    image_height, image_width, _ = image.shape
+    if display_image and detected_pose is not None:
+      if display_landmarks:
+        for landmark in detected_pose.landmarks.landmark: # type: ignore
+          # landmark_x = min(int(landmark.x * image_width), image_width - 1)
+          # landmark_y = min(int(landmark.y * image_height), image_height - 1)
+          landmark_x = int(landmark.x * image_width)
+          landmark_y = int(landmark.y * image_height)
+          cv2.circle(image, (landmark_x, landmark_y), 5, (0, 255, 0), -1)
+        draw_landmarks(
+          image,
+          detected_pose.landmarks, # type: ignore
+          list(POSE_CONNECTIONS),
+          landmark_drawing_spec=get_default_pose_landmarks_style()
+        )
+      head_coordinate = detected_pose.landmarks.landmark[0]
+      ori_x = min(int(head_coordinate.x * image_width), image_width) + 30
+      ori_y = min(int(head_coordinate.y * image_height), image_height)
+      # print(ori_x, ori_y)
+      cv2.putText(image, label_pred, (ori_x, ori_y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 1, cv2.LINE_AA)
+    cv2.imshow('detect pose result', image)

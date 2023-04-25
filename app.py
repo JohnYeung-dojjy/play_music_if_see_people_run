@@ -5,6 +5,7 @@ from VideoStreamManager import VideoStreamManager
 from AudioPlayer import AudioPlayer
 from ActionClassifier import PoseActionClassifier
 from os import PathLike
+import time
 
 def main(camera_id: int|str|None=None, 
          video_file: PathLike|str|None=None,
@@ -34,25 +35,36 @@ def main(camera_id: int|str|None=None,
                                     video_file=video_file,
                                     fps=fps)
   pose_detector = SinglePersonPoseDetector()
-  action_classifier = PoseActionClassifier()
+  action_classifier = PoseActionClassifier("pose_action_classifier_jogging=walking.pkl")
+  
+  last_resume_time = time.time()
+  
   for frame in video_stream.read_frames():
     img=frame.copy()
-    detected_pose: PoseDetectionResult|None = pose_detector.detect(img,
-                                                                   display_image=display_image,
-                                                                   display_landmarks=display_landmarks)
+    detected_pose: PoseDetectionResult|None = pose_detector.detect(img)
+                                                                  #  display_image=display_image,
+                                                                  #  display_landmarks=display_landmarks)
     if detected_pose is None: # continue to next frame if no pose detected
       audio_player.pause()
-      continue  
+      action = ""
+      # continue  
     else:
       action = action_classifier.classify(detected_pose)
       if action == "running":
         audio_player.resume()
+        last_resume_time = time.time()
       else:
+        current_time = time.time()
+        if current_time - last_resume_time < 1: continue
+        #  last_resume_time = current_time
         audio_player.pause()
         # audio_player.resume()
 
+    action_classifier.display_image(img, action, detected_pose, display_image, display_landmarks)
 
 if __name__ == "__main__":
   main(camera_id=0,
+       # video_file="Dataset/KTH/running/person02_running_d1_uncomp.avi",
+       # fps=60,
        display_image=True,
        display_landmarks=True)

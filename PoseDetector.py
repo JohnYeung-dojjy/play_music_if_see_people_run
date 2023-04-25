@@ -40,32 +40,32 @@ class SinglePersonPoseDetector():
                         min_detection_confidence=min_detection_confidence,
                         min_tracking_confidence=min_tracking_confidence)
       
-  def detect(self, image, display_image:bool=False, display_landmarks:bool=False)->PoseDetectionResult|None:
+  def detect(self, image)->PoseDetectionResult|None:
     #TODO: return list of landmarks, instead of image
     results = self.pose.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
     # print(results.pose_landmarks)
-    if display_image:
-      self.display_image(image, results, display_landmarks)
+    # if display_image:
+    #   self.display_image(image, results, display_landmarks)
     if results.pose_landmarks: # type: ignore
       return PoseDetectionResult(results.pose_landmarks) # type: ignore
     else:
       return None
-  def display_image(self, image, results, display_landmarks:bool):
-    image_height, image_width, _ = image.shape
-    if display_landmarks and results.pose_landmarks:
-      for landmark in results.pose_landmarks.landmark: # type: ignore
-        # landmark_x = min(int(landmark.x * image_width), image_width - 1)
-        # landmark_y = min(int(landmark.y * image_height), image_height - 1)
-        landmark_x = int(landmark.x * image_width)
-        landmark_y = int(landmark.y * image_height)
-        cv2.circle(image, (landmark_x, landmark_y), 5, (0, 255, 0), -1)
-      draw_landmarks(
-        image,
-        results.pose_landmarks, # type: ignore
-        list(POSE_CONNECTIONS),
-        landmark_drawing_spec=get_default_pose_landmarks_style()
-      )
-    cv2.imshow('image', image)
+  # def display_image(self, image, results, display_landmarks:bool):
+  #   image_height, image_width, _ = image.shape
+  #   if display_landmarks and results.pose_landmarks:
+  #     for landmark in results.pose_landmarks.landmark: # type: ignore
+  #       # landmark_x = min(int(landmark.x * image_width), image_width - 1)
+  #       # landmark_y = min(int(landmark.y * image_height), image_height - 1)
+  #       landmark_x = int(landmark.x * image_width)
+  #       landmark_y = int(landmark.y * image_height)
+  #       cv2.circle(image, (landmark_x, landmark_y), 5, (0, 255, 0), -1)
+  #     draw_landmarks(
+  #       image,
+  #       results.pose_landmarks, # type: ignore
+  #       list(POSE_CONNECTIONS),
+  #       landmark_drawing_spec=get_default_pose_landmarks_style()
+  #     )
+  #   cv2.imshow('image', image)
     # if results.pose_landmarks: # type: ignore
     #     for landmark in results.pose_landmarks.landmark: # type: ignore
     #         landmark_x = min(int(landmark.x * image_width), image_width - 1)
@@ -84,13 +84,7 @@ def test():
   video_stream = VideoStreamManager(video_file="Dataset/KTH/walking/person01_walking_d1_uncomp.avi")
   pose_detector = SinglePersonPoseDetector()
   for frame in video_stream.read_frames():
-    result: PoseDetectionResult | None = pose_detector.detect(frame, 
-                                          display_image=True,
-                                          display_landmarks=True
-                                          )
-  
-  
-
+    result: PoseDetectionResult | None = pose_detector.detect(frame)
 
 if __name__ == '__main__':
   test()
