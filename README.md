@@ -125,4 +125,4 @@ Afterwards, I trained 3 SVM (Support Vector Machine) classifiers in different se
 
 1. treat 'jogging' data as if they were 'running' data **(Easy to classify 'walking' as 'running')**
 2. treat 'jogging' data as if they were 'walking' data **(Easy to classify 'walking' as 'running')**
-3. ignore 'jogging' data **(Resulted in better performance (model size and robustness), *default model*)**
+3. ignore 'jogging' data **(Resulted in better performance (model size and robustness), *default)**
