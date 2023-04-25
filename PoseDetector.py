@@ -4,9 +4,9 @@ from mediapipe.python.solutions.drawing_utils import draw_landmarks
 from mediapipe.python.solutions.pose import Pose, PoseLandmark, POSE_CONNECTIONS
 from mediapipe.python.solutions.drawing_styles import get_default_pose_landmarks_style
 import numpy as np
-import torch
+# import torch
 from typing import NamedTuple
-import tensorflow as tf
+# import tensorflow as tf
     
 class PoseDetectionResult:
   def __init__(self, landmarks):
@@ -28,8 +28,8 @@ class PoseDetectionResult:
     self.np_landmarks = (self.np_landmarks - min_landmarks_xy) / (max_landmarks_xy - min_landmarks_xy)
     return self
         
-  def to_torch_tensor(self):
-    return torch.tensor(self.landmarks)
+  # def to_torch_tensor(self):
+  #   return torch.tensor(self.landmarks)
   
   def to_flattened_list(self):
     return list(self.np_landmarks.flatten())
