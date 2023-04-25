@@ -15,6 +15,7 @@ except ImportError as sklearnex_not_installed:
 from sklearn import svm, preprocessing
 from mediapipe.python.solutions.drawing_utils import draw_landmarks, draw_detection
 
+# The unneeded features to be filtered
 MEDIAPIPE_MASK: list[bool] = [False, False, # nose
                               False, False, # left_eye_inner
                               False, False, # left_eye

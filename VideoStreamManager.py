@@ -41,7 +41,8 @@ class VideoStreamManager:
       cv2.destroyAllWindows()
   
   def is_confirmed_exit(self)->bool:
-      return cv2.waitKey(5) & 0xFF == 27
+    """stop reading frames if ESC key is pressed"""
+    return cv2.waitKey(5) & 0xFF == 27
   
   def read_frames(self):
     """A generator that reads frames from the video stream

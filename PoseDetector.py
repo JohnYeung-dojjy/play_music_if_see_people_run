@@ -10,6 +10,11 @@ import tensorflow as tf
     
 class PoseDetectionResult:
   def __init__(self, landmarks):
+    """The detected pose result
+
+    Args:
+        landmarks (_type_): Pose.process().pose_landmarks
+    """
     # landmark.x, landmark.y are in a [0,1] scale, except when those are out-of-bound
     assert landmarks is not None, "landmarks should not be None"
     #TODO: make it np array by default
@@ -35,13 +40,26 @@ class SinglePersonPoseDetector():
               static_image_mode=False,
               min_detection_confidence=0.5,
               min_tracking_confidence=0.5):
-      
+    """init the single-person pose detector
+
+    Args: check https://github.com/google/mediapipe/blob/master/docs/solutions/pose.md
+        static_image_mode (bool, optional): _description_. Defaults to False.
+        min_detection_confidence (float, optional): _description_. Defaults to 0.5.
+        min_tracking_confidence (float, optional): _description_. Defaults to 0.5.
+    """
     self.pose: Pose = Pose(static_image_mode=static_image_mode,
                         min_detection_confidence=min_detection_confidence,
                         min_tracking_confidence=min_tracking_confidence)
       
   def detect(self, image)->PoseDetectionResult|None:
-    #TODO: return list of landmarks, instead of image
+    """Detect pose from the given image, return None if no pose is found.
+
+    Args:
+        image (cv2.Mat): the image obtained from cv2.CaptureVideo()
+
+    Returns:
+        PoseDetectionResult|None: the detected pose object
+    """
     results = self.pose.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
     # print(results.pose_landmarks)
     # if display_image:
