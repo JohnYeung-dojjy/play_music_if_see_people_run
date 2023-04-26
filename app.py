@@ -62,9 +62,10 @@ def main(camera_id: int|str|None=None,
 
     action_classifier.display_image(img, action, detected_pose, display_image, display_landmarks)
 
-if __name__ == "__main__":
-  main(camera_id=0,
-       # video_file="Dataset/KTH/running/person02_running_d1_uncomp.avi",
-       # fps=60,
-       display_image=True,
-       display_landmarks=True)
+"""Relative import error will occur when trying to run this file as main, try importing app.main() from a script in parent directory"""
+# if __name__ == "__main__":
+#   main(camera_id=0,
+#        # video_file="Dataset/KTH/running/person02_running_d1_uncomp.avi",
+#        # fps=60,
+#        display_image=True,
+#        display_landmarks=True)
