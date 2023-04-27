@@ -33,7 +33,7 @@ class SingletonMeta(type):
     return cls._instances[cls]
 
 class AudioPlayer(metaclass=SingletonMeta):
-  DEFAULT_AUDIO_PATH = Path(__file__).parent/"audio" / "uma_musume.mp3"
+  DEFAULT_AUDIO_PATH = Path(__file__).parent/"audio" / "uma_musume_cut.mp3"
   audio_player = mixer.music
   def __init__(self, audio_path: PathLike|None = None):
     self.audio_player.load(self.DEFAULT_AUDIO_PATH if audio_path is None else self.DEFAULT_AUDIO_PATH)
