@@ -35,7 +35,7 @@ class SingletonMeta(type):
 class AudioPlayer(metaclass=SingletonMeta):
   DEFAULT_AUDIO_PATH = Path(__file__).parent/"audio" / "uma_musume_cut.mp3"
   audio_player = mixer.music
-  def __init__(self, audio_path: PathLike|None = None):
+  def __init__(self, audio_path: PathLike|str|None = None):
     self.audio_player.load(self.DEFAULT_AUDIO_PATH if audio_path is None else self.DEFAULT_AUDIO_PATH)
     self._volume: float = 0.3
     self.started: bool = False
