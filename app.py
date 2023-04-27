@@ -10,6 +10,8 @@ import time
 def main(camera_id: int|str|None=None, 
          video_file: PathLike|str|None=None,
          fps: int=30,
+         audio_path: PathLike|str|None=None,
+         jogging: str="",
          display_image: bool=False,
          display_landmarks: bool=False):
   """play audio if detected people running in camera/video
@@ -24,18 +26,20 @@ def main(camera_id: int|str|None=None,
           - pause audio stream
 
   Args:
-      camera_id (int | str | None, optional): _description_. Defaults to None.
-      video_file (PathLike | str | None, optional): _description_. Defaults to None.
-      fps (int, optional): _description_. Defaults to 30.
-      display_image (bool, optional): _description_. Defaults to False.
-      display_landmarks (bool, optional): _description_. Defaults to False.
+      camera_id (int | str | None, optional): The camera id to take input from. Defaults to None.
+      video_file (PathLike | str | None, optional): The video path to take input from. Defaults to None.
+      fps (int, optional): frame per second. Defaults to 30.
+      audio_path (PathLike | str | None, optional): path of the played audio. Defaults to None (loads default umamusume theme song).
+      jogging (str, optional): Choose SVM model according to how it was trained. Defaults to "" (jogging data were ignored).
+      display_image (bool, optional): Whether to display the frame. Defaults to False.
+      display_landmarks (bool, optional): Whether to display the detect landmarks. Defaults to False.
   """
-  audio_player = AudioPlayer()
+  audio_player = AudioPlayer(audio_path=audio_path)
   video_stream = VideoStreamManager(camera_id=camera_id,
                                     video_file=video_file,
                                     fps=fps)
   pose_detector = SinglePersonPoseDetector()
-  action_classifier = PoseActionClassifier(jogging="walking")
+  action_classifier = PoseActionClassifier(jogging=jogging)
   
   last_resume_time = time.time()
   
