@@ -6,6 +6,13 @@
 
 ---
 
+Simple explanation on the program:
+
+- (粵) https://youtu.be/W8pWKNOB4es
+- (國) To be made
+- (English) To be made
+- (日本語) To be made
+
 ## Background
 
 Very often we will see someone running, trying to catch the bus, which always remind me the game Umamusume (ウマ娘) (賽馬娘)
