@@ -10,6 +10,8 @@ import time
 def main(camera_id: int|str|None=None, 
          video_file: PathLike|str|None=None,
          fps: int=30,
+         audio_path: PathLike|str|None=None,
+         jogging: str="",
          display_image: bool=False,
          display_landmarks: bool=False):
   """play audio if detected people running in camera/video
@@ -30,12 +32,12 @@ def main(camera_id: int|str|None=None,
       display_image (bool, optional): _description_. Defaults to False.
       display_landmarks (bool, optional): _description_. Defaults to False.
   """
-  audio_player = AudioPlayer()
+  audio_player = AudioPlayer(audio_path=audio_path)
   video_stream = VideoStreamManager(camera_id=camera_id,
                                     video_file=video_file,
                                     fps=fps)
   pose_detector = SinglePersonPoseDetector()
-  action_classifier = PoseActionClassifier(jogging="walking")
+  action_classifier = PoseActionClassifier(jogging=jogging)
   
   last_resume_time = time.time()
   

@@ -21,15 +21,18 @@ Mediapipe is updating their models right now (25 April 2023). Lets see what new 
 ## Sample Usage (also available in app.py)
 
 ```python
-from .PoseDetector import SinglePersonPoseDetector, PoseDetectionResult
-from .VideoStreamManager import VideoStreamManager
-from .AudioPlayer import AudioPlayer
-from .ActionClassifier import PoseActionClassifier
+from running_detection.PoseDetector import SinglePersonPoseDetector, PoseDetectionResult
+from running_detection.VideoStreamManager import VideoStreamManager
+from running_detection.AudioPlayer import AudioPlayer
+from running_detection.ActionClassifier import PoseActionClassifier
 import time
+from os import PathLike
 
 def main(camera_id: int|str|None=None, 
          video_file: PathLike|str|None=None,
          fps: int=30,
+         audio_path: PathLike|str|None=None,
+         jogging: str="",
          display_image: bool=False,
          display_landmarks: bool=False):
   """play audio if detected people running in camera/video
@@ -50,12 +53,12 @@ def main(camera_id: int|str|None=None,
       display_image (bool, optional): _description_. Defaults to False.
       display_landmarks (bool, optional): _description_. Defaults to False.
   """
-  audio_player = AudioPlayer()
+  audio_player = AudioPlayer(audio_path=audio_path)
   video_stream = VideoStreamManager(camera_id=camera_id,
                                     video_file=video_file,
                                     fps=fps)
   pose_detector = SinglePersonPoseDetector()
-  action_classifier = PoseActionClassifier(jogging="walking")
+  action_classifier = PoseActionClassifier(jogging=jogging)
   
   last_resume_time = time.time()
   
