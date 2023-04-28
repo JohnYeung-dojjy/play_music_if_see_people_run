@@ -11,7 +11,7 @@ Simple explanation on the program:
 - (粵) https://youtu.be/W8pWKNOB4es
 - (國) To be made
 - (English) To be made
-- (日本語) To be made
+- (日本語) https://youtu.be/IYqkTpjlDwQ
 
 ## Background
 
